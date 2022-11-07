@@ -30,6 +30,13 @@ def tree_pos_x(change_pos):
     for i in trees_group:
         i.rect.x += change_pos
 
+def change_player_size(walk_list):
+    just_list = []
+    for walk in walk_list:
+        walk = pygame.transform.scale(walk,(200,200))
+        just_list.append(walk)
+    return(just_list)
+
 walk_up = []
 walk_up.append(pygame.image.load('test_game/assets/walk/walk up1.png').convert_alpha())
 walk_up.append(pygame.image.load('test_game/assets/walk/walk up2.png').convert_alpha())
@@ -50,21 +57,39 @@ walk_left.append(pygame.image.load('test_game/assets/walk/walk left1.png').conve
 walk_left.append(pygame.image.load('test_game/assets/walk/walk left2.png').convert_alpha())
 walk_left.append(pygame.image.load('test_game/assets/walk/walk left3.png').convert_alpha())
 walk_left.append(pygame.image.load('test_game/assets/walk/walk left4.png').convert_alpha())
-
-def change_player_size(walk_list):
-    just_list = []
-    for walk in walk_list:
-        walk = pygame.transform.scale(walk,(200,200))
-        just_list.append(walk)
-    return(just_list)
-
 walk_up = change_player_size(walk_up)
 walk_down = change_player_size(walk_down)
 walk_right = change_player_size(walk_right)
 walk_left = change_player_size(walk_left)
 
+
+walk_idle_up = []
+walk_idle_up.append(pygame.image.load('test_game/assets/idle/idle up1.png').convert_alpha())
+walk_idle_up.append(pygame.image.load('test_game/assets/idle/idle up2.png').convert_alpha())
+walk_idle_up.append(pygame.image.load('test_game/assets/idle/idle up3.png').convert_alpha())
+walk_idle_up.append(pygame.image.load('test_game/assets/idle/idle up4.png').convert_alpha())
+walk_idle_down = []
+walk_idle_down.append(pygame.image.load('test_game/assets/idle/idle down1.png').convert_alpha())
+walk_idle_down.append(pygame.image.load('test_game/assets/idle/idle down2.png').convert_alpha())
+walk_idle_down.append(pygame.image.load('test_game/assets/idle/idle down3.png').convert_alpha())
+walk_idle_down.append(pygame.image.load('test_game/assets/idle/idle down4.png').convert_alpha())
+walk_idle_right = []
+walk_idle_right.append(pygame.image.load('test_game/assets/idle/idle right1.png').convert_alpha())
+walk_idle_right.append(pygame.image.load('test_game/assets/idle/idle right2.png').convert_alpha())
+walk_idle_right.append(pygame.image.load('test_game/assets/idle/idle right3.png').convert_alpha())
+walk_idle_right.append(pygame.image.load('test_game/assets/idle/idle right4.png').convert_alpha())
+walk_idle_left = []
+walk_idle_left.append(pygame.image.load('test_game/assets/idle/idle left1.png').convert_alpha())
+walk_idle_left.append(pygame.image.load('test_game/assets/idle/idle left2.png').convert_alpha())
+walk_idle_left.append(pygame.image.load('test_game/assets/idle/idle left3.png').convert_alpha())
+walk_idle_left.append(pygame.image.load('test_game/assets/idle/idle left4.png').convert_alpha())
+walk_idle_up = change_player_size(walk_idle_up)
+walk_idle_down = change_player_size(walk_idle_down)
+walk_idle_right = change_player_size(walk_idle_right)
+walk_idle_left = change_player_size(walk_idle_left)
+
 current_frame = 0
-    
+current_direction = 1
 
 def player_walk_animation(direction):
     global current_frame
@@ -91,6 +116,31 @@ def player_walk_animation(direction):
             current_frame = 0
         screen.blit(walk_left[int(current_frame)],player_rect)
 
+def player_idle_animation(direction):
+    global current_frame
+
+    if direction == 1:
+        current_frame += (0.1)
+        if current_frame >= 4:
+            current_frame = 0
+        screen.blit(walk_idle_up[int(current_frame)],player_rect)
+
+    elif direction == 2:
+        current_frame += (0.1)
+        if current_frame >= 4:
+            current_frame = 0
+        screen.blit(walk_idle_down[int(current_frame)],player_rect)
+    elif direction == 3:
+        current_frame += (0.1)
+        if current_frame >= 4:
+            current_frame = 0
+        screen.blit(walk_idle_right[int(current_frame)],player_rect)
+    elif direction == 4:
+        current_frame += (0.1)
+        if current_frame >= 4:
+            current_frame = 0
+        screen.blit(walk_idle_left[int(current_frame)],player_rect)
+
 while game_active:
     screen.fill('sky blue')
     screen.blit(ground,ground_rect)
@@ -105,19 +155,23 @@ while game_active:
         ground_rect.y += 3
         tree_pos_y(3)
         player_walk_animation(1)
+        current_direction = 1
     elif keys[pygame.K_DOWN]:
         ground_rect.y -= 3
         tree_pos_y(-3)
         player_walk_animation(2)
+        current_direction = 2
     elif keys[pygame.K_RIGHT]:
         ground_rect.x -= 3
         tree_pos_x(-3)
         player_walk_animation(3)
+        current_direction = 3
     elif keys[pygame.K_LEFT]:
         ground_rect.x += 3
         tree_pos_x(3)
         player_walk_animation(4)
+        current_direction = 4
     else:
-        screen.blit(walk_down[0],player_rect)
+        player_idle_animation(current_direction)
     pygame.display.update()
     clock.tick(75)
